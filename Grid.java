@@ -8,6 +8,10 @@ public class Grid {
         this.rows= tiles.length;
         this.cols = tiles[0].length;
     }
+    public TileType[][] getTiles() {
+        return tiles;
+    }
+    
     public int rows() { return rows; }
     public int cols() { return cols; }
 
@@ -62,3 +66,4 @@ public class Grid {
     }
 
 }
+
