@@ -1,12 +1,14 @@
-
 public class Player {
 
-    private int row;
-    private int col;
+    private final int row;
+    private final int col;
+    private int energie;
+    private int explosif;
 
     public Player(int row, int col) {
         this.row = row;
         this.col = col;
+        
     }
 
     public int getRow() {
@@ -16,17 +18,15 @@ public class Player {
     public int getCol() {
         return col;
     }
-
-    public int getEnergy() {
-        return energy;
+    public int getEnergie(){
+        return energie;
     }
-
-    public int getExplosif() {
+        public int getExplosif() {
         return explosif;
     }
 
-    public void setEnergy(int energy) {
-        this.energy = energy;
+    public void setEnergy(int energie) {
+        this.energie = energie;
     }
 
     public static record Position(int row, int col) {
@@ -77,6 +77,8 @@ public class Player {
     public Player movedTo(Position newPosition) {
         return new Player(newPosition.row, newPosition.col);
     }
+
+
     public int AjouterEnergie(int ajout){
         energie += ajout;
         return energie;
@@ -87,7 +89,7 @@ public class Player {
         }
         return energie;
     }
-}
 
+}
 
 
