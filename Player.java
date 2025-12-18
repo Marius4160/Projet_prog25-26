@@ -77,6 +77,17 @@ public class Player {
     public Player movedTo(Position newPosition) {
         return new Player(newPosition.row, newPosition.col);
     }
+    public int AjouterEnergie(int ajout){
+        energie += ajout;
+        return energie;
+    } 
+    public int ConsommerEnergie(int consommation){
+        if(energie>=consommation){
+            energie -= consommation;
+        }
+        return energie;
+    }
 }
+
 
 
