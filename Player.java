@@ -9,6 +9,14 @@ public class Player {
         this.col = col;
     }
 
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
     public static record Position(int row, int col) {
 
         public Position translate(int dr, int dc) {
@@ -58,3 +66,4 @@ public class Player {
         return new Player(newPosition.row, newPosition.col);
     }
 }
+
