@@ -64,6 +64,20 @@ public class Grid {
 
         return true;
     }
+        public void appliquerBombe(Player player, Player.Position pos){
+        TileType t = tiles[pos.row()][pos.col()];
+        switch(t){
+            case PileEnergie -> {
+                player.AjouterEnergie(5);
+                tiles[pos.row()][pos.col()] = TileType.SolVide;
+            }
+            case BlocEnergivore->{
+                player.ConsommerEnergie(-5);
+                tiles[pos.row()][pos.col()] = TileType.SolVide;
+            }
+        }
+    }
 
 }
+
 
