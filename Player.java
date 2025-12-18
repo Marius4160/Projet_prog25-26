@@ -17,6 +17,18 @@ public class Player {
         return col;
     }
 
+    public int getEnergy() {
+        return energy;
+    }
+
+    public int getExplosif() {
+        return explosif;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
+
     public static record Position(int row, int col) {
 
         public Position translate(int dr, int dc) {
@@ -66,4 +78,5 @@ public class Player {
         return new Player(newPosition.row, newPosition.col);
     }
 }
+
 
