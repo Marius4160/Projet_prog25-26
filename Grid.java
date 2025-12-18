@@ -57,4 +57,22 @@ public class Grid {
             System.out.println();
         }
     }
+    public boolean pousserBloc(Player.Position blocPos, Player.Direction dir) {
+
+        if (Grid.estBloc(grid, blocPos)==false) {
+            return false;
+        }
+        Player.Position nextPos = blocPos.translate(dir.dRow(), dir.dCol());
+        if (isInside(nextPos)== false) {
+            return false;
+        }
+        if (grid[nextPos.row()][nextPos.col()] != TileType.SolVide) {
+            return false;
+        }
+        grid[nextPos.row()][nextPos.col()] = grid[blocPos.row()][blocPos.col()];
+        grid[blocPos.row()][blocPos.col()] = TileType.SolVide;
+
+    return true;
+    }
 }
+
