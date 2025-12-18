@@ -1,2 +1,3 @@
 quand on pousse une caisse sur une case energie la case energie reste a son emplacement et la caisse se met par dessus, la case energie existe toujours 
 si le joueur repousse la caisse il ira sur la case energie et la recupérera l'energie
+donc faut stocker en mémoire la case energie quand on pousse une caisse dessus
