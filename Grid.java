@@ -72,7 +72,9 @@ public class Grid {
         grid[nextPos.row()][nextPos.col()] = grid[blocPos.row()][blocPos.col()];
         grid[blocPos.row()][blocPos.col()] = TileType.SolVide;
 
-    return true;
+        
+        return true;
     }
 }
+
 
