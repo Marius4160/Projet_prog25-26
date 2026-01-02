@@ -1,3 +1,4 @@
+
 public class Player {
 
     private final int row;
@@ -8,7 +9,7 @@ public class Player {
     public Player(int row, int col) {
         this.row = row;
         this.col = col;
-        
+
     }
 
     public int getRow() {
@@ -18,10 +19,12 @@ public class Player {
     public int getCol() {
         return col;
     }
-    public int getEnergie(){
+
+    public int getEnergie() {
         return energie;
     }
-        public int getExplosif() {
+
+    public int getExplosif() {
         return explosif;
     }
 
@@ -78,18 +81,16 @@ public class Player {
         return new Player(newPosition.row, newPosition.col);
     }
 
-
-    public int AjouterEnergie(int ajout){
+    public int AjouterEnergie(int ajout) {
         energie += ajout;
         return energie;
-    } 
-    public int ConsommerEnergie(int consommation){
-        if(energie>=consommation){
+    }
+
+    public int ConsommerEnergie(int consommation) {
+        if (energie >= consommation) {
             energie -= consommation;
         }
         return energie;
     }
 
 }
-
-
