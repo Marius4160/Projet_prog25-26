@@ -11,6 +11,10 @@ public class Grid {
     public int rows() { return rows; }
     public int cols() { return cols; }
 
+    public TileType[][] getTiles() {
+        return tiles;
+    }
+
     public boolean isInside(Player.Position p) {
         return p.row() >= 0 && p.row() < rows &&
                p.col() >= 0 && p.col() < cols;
@@ -116,3 +120,4 @@ public class Grid {
     }
 
 }
+
