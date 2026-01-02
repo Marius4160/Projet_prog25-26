@@ -14,32 +14,24 @@ public record EtatJeu(TileType[][] grid, Player.Position playerPos, int energie)
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj) { // Override le equals car celui du record de base ne convient pas
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (!(obj instanceof EtatJeu other)) { // vérifie que obj est bien un EtatJeu, créer la variable other 
             return false;
         }
-        if (!(obj instanceof EtatJeu)) {
+
+        if (energie != other.energie) { //test pour savoir si l'energie est différente 
             return false;
         }
-        EtatJeu other = (EtatJeu) obj;
-        if (this.energie != other.energie) {
+        if (playerPos.equals(other.playerPos) == false) { // test pour les positions si elles sont égales
             return false;
         }
-        if (this.playerPos.equals(other.playerPos) != false) { //teste la position du joueur 
-            return false;
-        }
-        if (this.grid.length != other.grid.length) {
-            return false;
-        }
-        if (this.grid[0].length != other.grid[0].length) {
-            return false;
-        }
-        for (int i = 0; i < grid.length; i++) {  //comparaison case pas case de différent elemenet
+
+        for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
-                if (this.grid[i][j] != other.grid[i][j]) {
+                if (grid[i][j] != other.grid[i][j]) {
                     return false;
                 }
             }
@@ -47,4 +39,15 @@ public record EtatJeu(TileType[][] grid, Player.Position playerPos, int energie)
         return true;
     }
 
+    @Override
+    public int hashCode() { // même chose que pour le equals --> on cherche à savoir si deux état sont différents 
+        int result = energie;                        // set l'energie pour pouvoir tester si l'energie est la meme entre deux état
+        result = 31 * result + playerPos.hashCode(); //nombre premirer + simple avec l'addition de la référence de la position du Player
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                result = 31 * result + grid[i][j].ordinal(); // donne le type de la case
+            }
+        }
+        return result;
+    }
 }
