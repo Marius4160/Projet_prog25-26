@@ -1,4 +1,6 @@
 
+import java.util.Scanner; // utilisation scanner pour les touches
+
 public class Player {
 
     private final int row;
@@ -81,17 +83,81 @@ public class Player {
         return new Player(newPosition.row, newPosition.col);
     }
 
-    public int AjouterEnergie(int ajout) {
-        energie += ajout;
-        return energie;
+    /**
+     * Lance une session de jeu manuel dans la console. Permet de tester les
+     * déplacements (z,q,s,d) et les bombes (b).
+     *
+     * @param grid La grille contenant la logique du jeu (collisions, etc.).
+     * @param etat L'état initial de la partie.
+     */
+    public static void jouerManuel(Grid grid, EtatJeu etat) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("=== MODE MANUEL ===");
+        System.out.println("Commandes : z (haut), q (gauche), s (bas), d (droite)");
+        System.out.println("Explosion : b puis direction");
+        System.out.println("Quitter   : exit");
+
+        while (true) {
+            System.out.println("\n--- TOUR ---");
+            System.out.println("Énergie: " + etat.energie() + " | Bombes: " + etat.bombes());
+            afficherGrille(etat.grid(), etat.playerPos());
+
+            if (grid.isWin(etat)) {
+                System.out.println("VICTOIRE !");
+                break;
+            }
+
+            System.out.print("> ");
+            String input = scanner.nextLine().trim();
+            if (input.equals("exit")) {
+                break;
+            }
+            if (input.isEmpty()) {
+                continue;
+            }
+
+            EtatJeu next = null;
+            // Gestion de l'explosion (touche 'b' suivie d'une direction)
+            if (input.startsWith("b")) {
+                System.out.print("Direction explosion > ");
+                String dirStr = scanner.nextLine().trim();
+                if (!dirStr.isEmpty()) {
+                    Direction dir = Direction.fromChar(dirStr.charAt(0));
+                    if (dir != null) {
+                        next = grid.explose(etat, dir);
+                    }
+                }
+            } else {
+                // Gestion du déplacement standard
+                Direction dir = Direction.fromChar(input.charAt(0));
+                if (dir != null) {
+                    next = grid.etatSuivant(etat, dir);
+                }
+            }
+
+            if (next != null) {
+                etat = next;
+            } else {
+                System.out.println("Action impossible !");
+            }
+        }
     }
 
-    public int ConsommerEnergie(int consommation) {
-        if (energie >= consommation) {
-            energie -= consommation;
+    /**
+     * Affiche la grille dans la console pour le mode manuel.
+     */
+    private static void afficherGrille(TileType[][] grid, Position playerPos) {
+        for (int i = 0; i < grid.length; i++) {
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < grid[0].length; j++) {
+                if (i == playerPos.row() && j == playerPos.col()) {
+                    sb.append("@"); // Représentation du joueur
+                } else {
+                    sb.append(grid[i][j].toSymbol());
+                }
+            }
+            System.out.println(sb.toString());
         }
-        return energie;
     }
 
 }
-
