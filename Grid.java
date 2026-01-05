@@ -22,8 +22,9 @@ public class Grid {
     }
 
     public boolean estBloc(TileType t) {
-        return t == TileType.BlocDestructible || t == TileType.BlocGlissant
-                || t == TileType.BlocEnergivore || t == TileType.BlocLeger;
+        return t == TileType.BlocGlissant
+                || t == TileType.BlocEnergivore
+                || t == TileType.BlocLeger;
     }
 
     public static Player.Position findPlayer(TileType[][] grid) {
@@ -126,3 +127,4 @@ public class Grid {
         return t == TileType.Objectif;
     }
 }
+
