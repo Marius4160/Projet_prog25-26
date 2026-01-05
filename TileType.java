@@ -35,31 +35,4 @@ public enum TileType {
                 "E";
         };
     }
-
-    public static TileType fromSymbol(char symbol) {
-        return switch (symbol) {
-            case '#' ->
-                Mur;
-            case 'X' ->
-                BlocDestructible;
-            case ' ' ->
-                SolVide;
-            case '@' ->
-                Joueur;
-            case '.' ->
-                Objectif;
-            case 'o' ->
-                BlocLeger;
-            case 'O' ->
-                BlocGlissant;
-            case '*' ->
-                BlocEnergivore;
-            case '+' ->
-                PileEnergie;
-            case 'E' ->
-                Explosif;
-            default ->
-                throw new IllegalArgumentException("Symbole inconnu: " + symbol);
-        };
-    }
 }
