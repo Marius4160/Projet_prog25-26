@@ -1,36 +1,4 @@
-
 public class Player {
-
-    private final int row;
-    private final int col;
-    private int energie;
-    private int explosif;
-
-    public Player(int row, int col) {
-        this.row = row;
-        this.col = col;
-
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public int getEnergie() {
-        return energie;
-    }
-
-    public int getExplosif() {
-        return explosif;
-    }
-
-    public void setEnergy(int energie) {
-        this.energie = energie;
-    }
 
     public static record Position(int row, int col) {
 
@@ -39,11 +7,7 @@ public class Player {
         }
     }
 
-    public static record ActionResult(Position newPosition, boolean win) {
-
-    }
-
-    public static enum Direction {
+    public enum Direction {
         UP(-1, 0), DOWN(1, 0), LEFT(0, -1), RIGHT(0, 1);
 
         private final int dr, dc;
@@ -63,34 +27,12 @@ public class Player {
 
         public static Direction fromChar(char c) {
             return switch (c) {
-                case 'z' ->
-                    UP;
-                case 's' ->
-                    DOWN;
-                case 'q' ->
-                    LEFT;
-                case 'd' ->
-                    RIGHT;
-                default ->
-                    null;
+                case 'z' -> UP;
+                case 's' -> DOWN;
+                case 'q' -> LEFT;
+                case 'd' -> RIGHT;
+                default -> null;
             };
         }
     }
-
-    public Player movedTo(Position newPosition) {
-        return new Player(newPosition.row, newPosition.col);
-    }
-
-    public int AjouterEnergie(int ajout) {
-        energie += ajout;
-        return energie;
-    }
-
-    public int ConsommerEnergie(int consommation) {
-        if (energie >= consommation) {
-            energie -= consommation;
-        }
-        return energie;
-    }
-
 }
