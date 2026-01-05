@@ -1,7 +1,11 @@
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Grid {
 
-    private final int rows, cols;
+    private final int rows;
+    private final int cols;
 
     public Grid(TileType[][] tiles) {
         this.rows = tiles.length;
@@ -26,7 +30,7 @@ public class Grid {
                 || t == TileType.BlocEnergivore
                 || t == TileType.BlocLeger;
     }
-    
+
     public static Player.Position findPlayer(TileType[][] grid) {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
@@ -38,20 +42,6 @@ public class Grid {
         return null;
     }
 
-    public boolean pousserBloc(TileType[][] grid, Player.Position blocPos, Player.Direction dir) {
-        Player.Position nextPos
-                = blocPos.translate(dir.dRow(), dir.dCol());
-
-        if (isInside(nextPos) == false) {
-            return false;
-        }
-        if (grid[nextPos.row()][nextPos.col()] != TileType.SolVide) {
-            return false;
-        }
-
-        return true;
-    }
-
     private static TileType[][] copieGrid(TileType[][] grid) {
         TileType[][] copie = new TileType[grid.length][grid[0].length];
         for (int i = 0; i < grid.length; i++) {
@@ -60,49 +50,92 @@ public class Grid {
         return copie;
     }
 
-    public EtatJeu EtatSuivant(EtatJeu etat, Player.Direction dir) {
+    public EtatJeu etatSuivant(EtatJeu etat, Player.Direction dir) {
 
-        Player.Position newPos
+        Player.Position cible
                 = etat.playerPos().translate(dir.dRow(), dir.dCol());
 
-        if (!isInside(newPos)) {
+        if (!isInside(cible)) {
             return null;
         }
 
         TileType[][] grid = etat.grid();
-        TileType cible = grid[newPos.row()][newPos.col()];
+        TileType contenu = grid[cible.row()][cible.col()];
 
-        // Mur impossible 
-        if (cible == TileType.Mur) {
+        if (contenu == TileType.Mur || contenu == TileType.BlocDestructible) {
             return null;
         }
-
         TileType[][] newGrid = copieGrid(grid);
         int newEnergie = etat.energie();
+        int newBombes = etat.bombes();
+        List<Player.Position> newBlocs = new ArrayList<>(etat.blocs());
 
-        // Pile d'énergie
-        if (cible == TileType.PileEnergie) {
-            newEnergie += 5;
-            newGrid[newPos.row()][newPos.col()] = TileType.SolVide;
-        }
+        if (estBloc(contenu)) {
 
-        // Bloc énergivore
-        if (cible == TileType.BlocEnergivore) {
-            newEnergie -= 5;
-            if (newEnergie < 0) {
+            Player.Position nextBlocPos
+                    = cible.translate(dir.dRow(), dir.dCol());
+
+            if (!isInside(nextBlocPos)) {
                 return null;
             }
+            if (grid[nextBlocPos.row()][nextBlocPos.col()] != TileType.SolVide) {
+                return null;
+            }
+
+            int cout = switch (contenu) {
+                case BlocLeger ->
+                    1;
+                case BlocEnergivore ->
+                    3;
+                case BlocGlissant ->
+                    0;
+                default ->
+                    0;
+            };
+
+            if (newEnergie < cout) {
+                return null;
+            }
+            newEnergie -= cout;
+
+            newGrid[nextBlocPos.row()][nextBlocPos.col()] = contenu;
+            newGrid[cible.row()][cible.col()] = TileType.SolVide;
+
+            newBlocs.remove(cible);
+            newBlocs.add(nextBlocPos);
         }
 
-        return new EtatJeu(newGrid, newPos, newEnergie);
+        if (contenu == TileType.PileEnergie) {
+            newEnergie += 5;
+            newGrid[cible.row()][cible.col()] = TileType.SolVide;
+        }
+
+        if (contenu == TileType.Explosif) {
+            newBombes++;
+            newGrid[cible.row()][cible.col()] = TileType.SolVide;
+        }
+
+        newGrid[etat.playerPos().row()][etat.playerPos().col()] = TileType.SolVide;
+        // Si la cible est un objectif, conserver la tuile Objectif plutôt que d'écraser par Joueur
+        // anciennement cette ligne était :
+        // newGrid[cible.row()][cible.col()] = TileType.Joueur;
+        if (contenu == TileType.Objectif) {
+            newGrid[cible.row()][cible.col()] = TileType.Objectif;
+        } else {
+            newGrid[cible.row()][cible.col()] = TileType.Joueur;
+        }
+
+        List<String> nouvAction = new ArrayList<>(etat.actions());
+        nouvAction.add("MOVE " + dir);
+
+        return new EtatJeu(newGrid, cible, newBlocs, newEnergie, newBombes, nouvAction);
     }
 
     public EtatJeu explose(EtatJeu etat, Player.Direction dir) {
 
-        if (etat.energie() <= 0) {
+        if (etat.bombes() <= 0) {
             return null;
         }
-
         Player.Position cible
                 = etat.playerPos().translate(dir.dRow(), dir.dCol());
 
@@ -119,14 +152,18 @@ public class Grid {
 
         newGrid[cible.row()][cible.col()] = TileType.SolVide;
 
-        return new EtatJeu(newGrid, etat.playerPos(), etat.energie() - 1);
+        List<Player.Position> newBlocs = new ArrayList<>(etat.blocs());
+        newBlocs.remove(cible);
+
+        List<String> newActions = new ArrayList<>(etat.actions());
+        newActions.add("BOMB " + dir);
+
+        return new EtatJeu(newGrid, etat.playerPos(), newBlocs, etat.energie(), etat.bombes() - 1, newActions);
     }
 
     public boolean isWin(EtatJeu etat) {
-        TileType t = etat.grid()[etat.playerPos().row()][etat.playerPos().col()];
+        TileType t
+                = etat.grid()[etat.playerPos().row()][etat.playerPos().col()];
         return t == TileType.Objectif;
     }
 }
-
-
-
