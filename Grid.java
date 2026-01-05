@@ -26,6 +26,21 @@ public class Grid {
                 || t == TileType.BlocEnergivore
                 || t == TileType.BlocLeger;
     }
+    public TileType typeBloc(TileType[][]grid ,Player.Position p){ 
+            if(grid [p.row()][p.col()] == TileType.BlocDestructible){ 
+                return TileType.BlocDestructible; 
+            }
+            else if(grid [p.row()][p.col()] == TileType.BlocGlissant){ 
+                return TileType.BlocGlissant; 
+            }
+            else if(grid [p.row()][p.col()] == TileType.BlocEnergivore){
+                return TileType.BlocEnergivore; 
+            }
+            else if(grid [p.row()][p.col()] == TileType.BlocLeger){ 
+                return TileType.BlocLeger; 
+            }  
+            return null; 
+        }
 
     public static Player.Position findPlayer(TileType[][] grid) {
         for (int i = 0; i < grid.length; i++) {
@@ -127,4 +142,5 @@ public class Grid {
         return t == TileType.Objectif;
     }
 }
+
 
