@@ -1,4 +1,4 @@
-// le main est un test, a retirer pour le rendu final
+
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
@@ -86,10 +86,10 @@ public class Solver {
     }
 
     // main de test et démonstration
-    public static void main(String[] args) {
+    public static void loop() {
         try {
             // Charger un niveau depuis le fichier JSON sans dépendance externe
-            java.util.List<String> linesRaw = java.nio.file.Files.readAllLines(java.nio.file.Path.of("niveau1.json"));
+            java.util.List<String> linesRaw = java.nio.file.Files.readAllLines(java.nio.file.Path.of("niveau2.json"));
             String nom = "";
             int energieInitiale = 0;
             java.util.List<String> grilleLines = new java.util.ArrayList<>();
@@ -187,7 +187,7 @@ public class Solver {
             /*  // ligne a enlever pour activer le solver automatique
             Solver solver = new Solver(grid);
             EtatJeu solution = solver.solve(etatInitial);
-
+            
             // Afficher le résultat
             if (solution != null) {
                 System.out.println("\n✓ PUZZLE RÉSOLU !\n");
@@ -240,4 +240,3 @@ public class Solver {
     }
 
 }
-
