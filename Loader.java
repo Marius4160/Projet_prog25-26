@@ -1,7 +1,7 @@
+
 import com.google.*;
 import com.google.gson.Gson;
 
-import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -11,20 +11,19 @@ public class Loader {
         String json = Files.readString(Path.of(fileName));
         return new Gson().fromJson(json, Level.class);
     }
-    /*public static void main(String[] args) {
-        Gson gson = new Gson();
-        try {
-            FileReader reader = new FileReader("level/leveldemo.json");
-            Level p = gson.fromJson(reader, Level.class);
 
-            System.out.println("Nom " + p.nom);
-            System.out.println("EnergieInitiale  "+p.energieInitiale);
-            System.out.println("Grille ");
-            for (String ligne : p.grille) {
-                System.out.println(ligne);
+    public static void afficherGrille(EtatJeu etat) {
+        System.out.println("Grille ");
+        for (TileType[] row : etat.grid()) {
+            StringBuilder sb = new StringBuilder();
+            for (TileType t : row) {
+                sb.append(t.toSymbol());
             }
-        } catch (Exception e) {
-            e.fillInStackTrace();
+            System.out.println(sb);
         }
-    }*/
+    }
+
+    public static void affichage(EtatJeu etat) { // faudrait que ca gere le fonctionnement du jeu
+        afficherGrille(etat);
+    }
 }
