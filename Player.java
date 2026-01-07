@@ -79,7 +79,7 @@ public class Player {
         }
     }
 
-    public Player movedTo(Position newPosition) {
+    public Player movedTo(Position newPosition) { // retourne un nouveau joueur a la nouvelle position
         return new Player(newPosition.row, newPosition.col);
     }
 
@@ -100,23 +100,23 @@ public class Player {
         while (true) {
             System.out.println("\n--- TOUR ---");
             System.out.println("Énergie: " + etat.energie() + " | Bombes: " + etat.bombes());
-            afficherGrille(etat.grid(), etat.playerPos());
+            Loader.afficherGrille(etat); // affichage du plateau
 
             if (grid.isWin(etat)) {
-                System.out.println("VICTOIRE !");
+                System.out.println("VICTOIRE !"); // verif victoire
                 break;
             }
 
             System.out.print("> ");
             String input = scanner.nextLine().trim();
-            if (input.equals("exit")) {
+            if (input.equals("exit")) { // quitter le jeu
                 break;
             }
-            if (input.isEmpty()) {
+            if (input.isEmpty()) { // entree vide
                 continue;
             }
 
-            EtatJeu next = null;
+            EtatJeu next = null; // on définit l'état suivant à null au départ de chaque tour
             // Gestion de l'explosion (touche 'b' suivie d'une direction)
             if (input.startsWith("b")) {
                 System.out.print("Direction explosion > ");
@@ -140,23 +140,6 @@ public class Player {
             } else {
                 System.out.println("Action impossible !");
             }
-        }
-    }
-
-    /**
-     * Affiche la grille dans la console pour le mode manuel.
-     */
-    private static void afficherGrille(TileType[][] grid, Position playerPos) {
-        for (int i = 0; i < grid.length; i++) {
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < grid[0].length; j++) {
-                if (i == playerPos.row() && j == playerPos.col()) {
-                    sb.append("@"); // Représentation du joueur
-                } else {
-                    sb.append(grid[i][j].toSymbol());
-                }
-            }
-            System.out.println(sb.toString());
         }
     }
 
