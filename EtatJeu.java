@@ -17,7 +17,7 @@ public record EtatJeu(TileType[][] grid, Player.Position playerPos, List<Player.
         return copie;
     }
 
-    @Override 
+    @Override
     public boolean equals(Object obj) { // réecrit le equals initialiser par le record EtatJeu
         if (this == obj) {
             return true;
