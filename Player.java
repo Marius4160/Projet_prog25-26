@@ -134,13 +134,14 @@ public class Player {
                     next = grid.etatSuivant(etat, dir);
                 }
             }
-            scanner.close();
+
             if (next != null) {
                 etat = next;
             } else {
                 System.out.println("Action impossible !");
             }
         }
+        scanner.close();
     }
 
 }
