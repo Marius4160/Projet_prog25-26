@@ -50,10 +50,10 @@ public class Solver {
             // Charger un niveau depuis le fichier JSON sans dépendance externe
             // Lecture brute de toutes les lignes du fichier de niveau
             java.util.List<String> linesRaw = java.nio.file.Files.readAllLines(java.nio.file.Path.of("levels/level2.json"));
-            String nom = "";
-            int energieInitiale = 0;
+            var nom = "";
+            var energieInitiale = 0;
             java.util.List<String> grilleLines = new java.util.ArrayList<>();
-            boolean inGrille = false;
+            var inGrille = false;
 
             // Analyse manuelle du JSON ligne par ligne pour extraire les propriétés
             for (String l : linesRaw) {
@@ -145,8 +145,8 @@ public class Solver {
             }
 
             // Initialisation de la logique du jeu (Grid) et de l'état de départ
-            Grid grid = new Grid(tiles);
-            EtatJeu etatInitial = new EtatJeu(tiles, playerPos, blocs, energieInitiale, 0, new java.util.ArrayList<>());
+            var grid = new Grid(tiles);
+            var etatInitial = new EtatJeu(tiles, playerPos, blocs, energieInitiale, 0, new java.util.ArrayList<>());
 
             // Test manuel des commandes
             // Lance la boucle de jeu interactive dans la console
