@@ -117,7 +117,7 @@ public class Player {
             }
 
             EtatJeu next = null; // on définit l'état suivant à null au départ de chaque tour
-            // Gestion de l'explosion (touche 'b' suivie d'une direction)
+            // Gestion de l'explosion 
             if (input.startsWith("b")) {
                 System.out.print("Direction explosion > ");
                 String dirStr = scanner.nextLine().trim();
@@ -134,7 +134,7 @@ public class Player {
                     next = grid.etatSuivant(etat, dir);
                 }
             }
-
+            scanner.close();
             if (next != null) {
                 etat = next;
             } else {
