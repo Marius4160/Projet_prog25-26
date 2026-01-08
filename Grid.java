@@ -64,9 +64,9 @@ public class Grid {
         if (contenu == TileType.Mur || contenu == TileType.BlocDestructible) { //impossible d'avancer
             return null;
         }
-        TileType[][] newGrid = copieGrid(grid); 
-        int newEnergie = etat.energie();
-        int newBombes = etat.bombes();
+        TileType[][] newGrid = copieGrid(grid);
+        var newEnergie = etat.energie();
+        var newBombes = etat.bombes();
         List<Player.Position> newBlocs = new ArrayList<>(etat.blocs());
         //copie de la grille dans l'etat pour respecter l'immuabilité 
 
@@ -134,8 +134,8 @@ public class Grid {
             return null;
         }
         //case ciblée par l'exploqion//
-        Player.Position cible = etat.playerPos().translate(dir.dRow(), dir.dCol()); 
-        
+        Player.Position cible = etat.playerPos().translate(dir.dRow(), dir.dCol());
+
         if (!isInside(cible)) {
             return null;
         }
@@ -143,20 +143,22 @@ public class Grid {
         TileType[][] newGrid = copieGrid(etat.grid());
         TileType t = newGrid[cible.row()][cible.col()];
 
-        if (t != TileType.BlocDestructible ) {
+        if (t != TileType.BlocDestructible) {
             return null;
         }
 
         newGrid[cible.row()][cible.col()] = TileType.SolVide;
-       
+
         List<Player.Position> newBlocs = new ArrayList<>(etat.blocs());  //liste des blocs mises à jour//
         newBlocs.remove(cible);
-        
-        List<String> newActions = new ArrayList<>(etat.actions()); /*//ajoute l'action à la liste du record */
+
+        List<String> newActions = new ArrayList<>(etat.actions());
+        /*//ajoute l'action à la liste du record */
         newActions.add("BOMB " + dir);
         /*renvoie le nouveau record */
         return new EtatJeu(newGrid, etat.playerPos(), newBlocs, etat.energie(), etat.bombes() - 1, newActions);
     }
+
     /*test si le jeu est gagné  */
     public boolean isWin(EtatJeu etat) {
         TileType t = etat.grid()[etat.playerPos().row()][etat.playerPos().col()];
