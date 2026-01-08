@@ -141,7 +141,6 @@ public class Player {
                 System.out.println("Action impossible !");
             }
         }
-        scanner.close();
     }
 
 }
