@@ -7,12 +7,13 @@ import java.nio.file.Path;
 
 public class Loader {
 
+    // Charge un niveau depuis un fichier JSON et le retourne sous forme d'un objet Level
     public static Level load(String fileName) throws Exception {
         String json = Files.readString(Path.of(fileName));
         return new Gson().fromJson(json, Level.class);
     }
 
-    public static void afficherGrille(EtatJeu etat) {
+    public static void afficherGrille(EtatJeu etat) { // affiche la grille dans la console
         System.out.println("Grille ");
         for (TileType[] row : etat.grid()) {
             StringBuilder sb = new StringBuilder();
@@ -21,9 +22,5 @@ public class Loader {
             }
             System.out.println(sb);
         }
-    }
-
-    public static void affichage(EtatJeu etat) { // faudrait que ca gere le fonctionnement du jeu
-        afficherGrille(etat);
     }
 }
