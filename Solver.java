@@ -44,73 +44,38 @@ public class Solver {
         return null;
     }
 
-    // Convertir un TileType en caractère pour l'affichage
-    private static char tileToChar(TileType t) {
-        return switch (t) {
-            case Mur ->
-                '#';
-            case Joueur ->
-                '@';
-            case Objectif ->
-                '.';
-            case PileEnergie ->
-                '+';
-            case Explosif ->
-                'E';
-            case BlocEnergivore ->
-                '*';
-            case BlocDestructible ->
-                'X';
-            case BlocLeger ->
-                'o';
-            case BlocGlissant ->
-                'O';
-            case SolVide ->
-                ' ';
-        };
-    }
-
-    // Afficher la grille
-    private static void afficherGrille(TileType[][] grid, Player.Position playerPos) {
-        for (int i = 0; i < grid.length; i++) {
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < grid[0].length; j++) {
-                if (i == playerPos.row() && j == playerPos.col()) {
-                    sb.append('@');
-                } else {
-                    sb.append(tileToChar(grid[i][j]));
-                }
-            }
-            System.out.println(sb.toString());
-        }
-    }
-
     // main de test et démonstration
     public static void loop() {
         try {
             // Charger un niveau depuis le fichier JSON sans dépendance externe
-            java.util.List<String> linesRaw = java.nio.file.Files.readAllLines(java.nio.file.Path.of("niveau2.json"));
+            // Lecture brute de toutes les lignes du fichier de niveau
+            java.util.List<String> linesRaw = java.nio.file.Files.readAllLines(java.nio.file.Path.of("levels/level2.json"));
             String nom = "";
             int energieInitiale = 0;
             java.util.List<String> grilleLines = new java.util.ArrayList<>();
             boolean inGrille = false;
 
+            // Analyse manuelle du JSON ligne par ligne pour extraire les propriétés
             for (String l : linesRaw) {
                 String s = l.trim();
+                // Récupération du nom du niveau
                 if (s.startsWith("\"nom\"")) {
                     nom = s.substring(s.indexOf(':') + 1).replaceAll("[\",]", "").trim();
                 }
+                // Récupération de l'énergie de départ
                 if (s.startsWith("\"energieInitiale\"")) {
                     String num = s.substring(s.indexOf(':') + 1).replaceAll("[^0-9]", "");
                     energieInitiale = Integer.parseInt(num);
                 }
+                // Détection du début du tableau de la grille
                 if (s.startsWith("\"grille\"")) {
                     inGrille = true;
                     continue;
                 }
+                // Lecture des lignes de la grille jusqu'à la fermeture du tableau
                 if (inGrille) {
                     if (s.startsWith("]")) {
-                        break;
+                        break; // Fin de la section grille
                     }
                     String row = s.replaceAll("[\",]", "").trim();
                     if (!row.isEmpty()) {
@@ -128,6 +93,7 @@ public class Solver {
             }
 
             // Construire la grille et l'état initial
+            // Conversion de la liste de chaînes en tableau 2D de TileType
             String[] lines = grilleLines.toArray(new String[0]);
             int rows = lines.length;
             int cols = lines[0].length();
@@ -135,6 +101,7 @@ public class Solver {
             java.util.List<Player.Position> blocs = new java.util.ArrayList<>();
             Player.Position playerPos = null;
 
+            // Parcours de chaque caractère pour instancier les tuiles correspondantes
             for (int i = 0; i < rows; i++) {
                 String line = lines[i];
                 for (int j = 0; j < cols; j++) {
@@ -145,7 +112,7 @@ public class Solver {
                             t = TileType.Mur;
                         case '@' -> {
                             t = TileType.Joueur;
-                            playerPos = new Player.Position(i, j);
+                            playerPos = new Player.Position(i, j); // Mémorisation de la position du joueur
                         }
                         case '.' ->
                             t = TileType.Objectif;
@@ -177,14 +144,16 @@ public class Solver {
                 return;
             }
 
-            // Résoudre le puzzle
+            // Initialisation de la logique du jeu (Grid) et de l'état de départ
             Grid grid = new Grid(tiles);
             EtatJeu etatInitial = new EtatJeu(tiles, playerPos, blocs, energieInitiale, 0, new java.util.ArrayList<>());
 
             // Test manuel des commandes
+            // Lance la boucle de jeu interactive dans la console
             Player.jouerManuel(grid, etatInitial); // Décommenter pour jouer manuellement
 
             /*  // ligne a enlever pour activer le solver automatique
+            // Création du solveur et recherche de la solution optimale
             Solver solver = new Solver(grid);
             EtatJeu solution = solver.solve(etatInitial);
             
@@ -197,15 +166,16 @@ public class Solver {
                 System.out.println("  • Bombes : " + solution.bombes());
 
                 System.out.println("\nGrille finale:");
-                afficherGrille(solution.grid(), solution.playerPos());
+                // Loader.afficherGrille(solution); // Affichage de l'état final
 
                 // Replay étape par étape
+                // Rejoue la séquence d'actions trouvée pour visualiser la solution
                 System.out.println("\n=== REPLAY ÉTAPE PAR ÉTAPE ===\n");
                 EtatJeu current = etatInitial;
 
                 System.out.println("ÉTAPE 0 (Initiale)");
                 System.out.println("Énergie: " + current.energie() + " | Bombes: " + current.bombes());
-                afficherGrille(current.grid(), current.playerPos());
+                // Loader.afficherGrille(current);
 
                 int step = 1;
                 for (String act : solution.actions()) {
@@ -214,9 +184,12 @@ public class Solver {
 
                     String[] parts = act.split(" ");
                     Player.Direction dir = Player.Direction.valueOf(parts[1]);
-                    EtatJeu next = parts[0].equals("MOVE")
-                            ? grid.etatSuivant(current, dir)
-                            : grid.explose(current, dir);
+                    EtatJeu next;
+                    if (parts[0].equals("MOVE")) {
+                        next = grid.etatSuivant(current, dir);
+                    } else {
+                        next = grid.explose(current, dir);
+                    }
 
                     if (next == null) {
                         System.out.println("Erreur : action invalide");
@@ -224,7 +197,7 @@ public class Solver {
                     }
 
                     System.out.println("Énergie: " + next.energie() + " | Bombes: " + next.bombes());
-                    afficherGrille(next.grid(), next.playerPos());
+                    // Loader.afficherGrille(next);
                     current = next;
                     step++;
                 }
